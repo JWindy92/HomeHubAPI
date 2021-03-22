@@ -2,6 +2,7 @@ const DB = require("../public/scripts/DB")
 
 module.exports = function(app) {
 
+    // Returns a list of supported device types
     app.get('/devices/supported', (req, res) => {
         let promise = DB.get_table('Supported_Devices')
         promise.then((ret) => {
@@ -11,6 +12,8 @@ module.exports = function(app) {
         })
     })
     
+    // Returns entire list of devices of a certain type
+    // TODO: Should handle no device type by returning all devices in DB
     app.get('/devices/', (req, res) => {
         if (req.query.type) {
             let promise = DB.get_table(req.query.type)
@@ -20,6 +23,11 @@ module.exports = function(app) {
                 console.log(err)
             })
         }
+    })
+
+    app.post('/add_device', (req, res) => {
+        console.log(req.body)
+        res.json({"status": res.statusCode})
     })
     
     // Do I accept a type param and use that to determine which DB function to call?
