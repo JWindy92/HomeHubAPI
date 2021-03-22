@@ -33,6 +33,8 @@ class SocketService {
     }
 }
 
+console.log("Hello from the new branch")
+
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(body_parser.json())
