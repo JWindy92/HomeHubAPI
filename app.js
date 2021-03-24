@@ -8,7 +8,8 @@ const app = express()
 const url = require('url')
 const path = require('path')
 const e = require('cors')
-const DB = require("./public/scripts/DB.js")
+const mysql_DB = require("./public/scripts/mysql_DB.js")
+const DB = require('./public/scripts/DB')
 const mqtt = require('./public/scripts/mqtt')()
 const port = 3001
 
