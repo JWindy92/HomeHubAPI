@@ -1,5 +1,5 @@
 const DB = require("../public/scripts/DB")
-const mysql_DB = require("../public/scripts/mysql_DB")
+// const mysql_DB = require("../public/scripts/mysql_DB")
 
 module.exports = function(app) {
 
@@ -10,20 +10,19 @@ module.exports = function(app) {
         }).catch((err) => {
             console.log(err)
         })
-        // let promise = mysql_DB.get_table('Supported_Devices')
-        // promise.then((ret) => {
-        //     res.json(ret)
-        // }).catch((err) => {
-        //     console.log(err)
-        // })
     })
     
     // Returns entire list of devices of a certain type
     // TODO: Should handle no device type by returning all devices in DB
     app.get('/devices/', (req, res) => {
         if (req.query.type) {
-            let promise = mysql_DB.get_table(req.query.type)
-            promise.then((ret) => {
+            DB.get_devices(req.query.type).then((ret) => {
+                res.json(ret)
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else {
+            DB.get_devices().then((ret) => {
                 res.json(ret)
             }).catch((err) => {
                 console.log(err)

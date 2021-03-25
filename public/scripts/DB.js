@@ -39,17 +39,13 @@ function get_collection(collection_name) {
     return model.find({})
 }
 
-get_collection('SUPPORTED_DEVICES').then((ret) => {
-    console.log(ret)
-}).catch((err) => {
-    console.log(err)
-})
-
 function get_devices(type="") {
     if (type) {
-        console.log("Just get these")
+        let model = Models.Device
+        return model.find({type: type})
     } else {
-        console.log("Get everything!")
+        let model = Models.Device
+        return model.find({})
     }
 }
 
