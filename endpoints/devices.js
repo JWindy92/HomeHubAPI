@@ -1,11 +1,11 @@
-const DB = require("../public/scripts/DB")
-const Models = require("../Database/models")
+const DB = require("../database/DB")
+const Models = require("../database/models")
 
-module.exports = function(app) {
+module.exports = (app) => {
 
     // Returns a list of supported device types
     app.get('/devices/supported', (req, res) => {
-        DB.get_collection("SUPPORTED_DEVICES").then((ret) => {
+        DB.READ.get_collection("SUPPORTED_DEVICES").then((ret) => {
             res.json(ret)
         }).catch((err) => {
             console.log(err)
@@ -13,16 +13,15 @@ module.exports = function(app) {
     })
     
     // Returns entire list of devices of a certain type
-    // TODO: Should handle no device type by returning all devices in DB
     app.get('/devices/', (req, res) => {
         if (req.query.type) {
-            DB.get_devices(req.query.type).then((ret) => {
+            DB.READ.get_devices(req.query.type).then((ret) => {
                 res.json(ret)
             }).catch((err) => {
                 console.log(err)
             })
         } else {
-            DB.get_devices().then((ret) => {
+            DB.READ.get_devices().then((ret) => {
                 res.json(ret)
             }).catch((err) => {
                 console.log(err)
@@ -31,20 +30,15 @@ module.exports = function(app) {
     })
 
     app.post('/add_device', (req, res) => {
-        let model = Models.Collections[req.body.type]
-        let device = new model(req.body)
-        console.log("Attempting to save")
-        device.save((err) => {
-            if (err) {
-                console.log(err)
-            } else {
-                console.log('success')
-                res.json({
-                    'result': 'success',
-                    'status': res.statusCode,
-                })
-            }
+        DB.WRITE.create_device(req.body)
+        .then((ret) => {
+            res.json({
+                'result': ret,
+                'status': res.statusCode,
+            })
+        }).catch((err) => {
+            console.log(err)
         })
-    })
 
+    })
 }

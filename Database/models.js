@@ -24,14 +24,14 @@ const Sonoff_Basic_Schema = new Schema({
 
 const Sonoff_Basic_Model = mongoose.model("Sonoff Basic", Sonoff_Basic_Schema, "DEVICES")
 
-const collection_dict = {
+const lookup_dict = {
     'SUPPORTED_DEVICES': SupportedDeviceModel,
     'DEVICES': DeviceModel,
     'Sonoff Basic': Sonoff_Basic_Model,
 }
 
 module.exports = {
-    "Collections" : collection_dict,
+    "Lookup" : lookup_dict,
     "SupportedDevice" : SupportedDeviceModel,
     "Sonoff_Basic": Sonoff_Basic_Model,
     "Device" : DeviceModel

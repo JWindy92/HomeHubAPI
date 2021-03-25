@@ -1,16 +1,17 @@
-
 const MongoClient = require('mongodb').MongoClient
 const mongoose = require('mongoose')
 const assert = require('assert')
 const f = require('util').format
 
-const Models = require('../../Database/models')
+const READ = require('./utils/read_functions')
+const WRITE = require('./utils/write_functions')
+
+// const Models = require('./models')
 
 const DB_NAME = 'SmartHomeDB'
-const USER = 'root'
-const PASSW = 'admin'
-const AUTHMECHANISM = 'DEFAULT'
-const CONN_URL = `mongodb://localhost:27018/SmartHomeDB`
+//! const USER = 'root'
+//! const PASSW = 'admin'
+const CONN_URL = `mongodb://localhost:27018/${DB_NAME}`
 
 mongoose.connect(CONN_URL, {
     useNewUrlParser: true,
@@ -34,22 +35,7 @@ db.once("open", () => {
     console.log("Connected to SmartHomeDB")
 })
 
-function get_collection(collection_name) {
-    let model = Models.Collections[collection_name]
-    return model.find({})
-}
-
-function get_devices(type="") {
-    if (type) {
-        let model = Models.Device
-        return model.find({type: type})
-    } else {
-        let model = Models.Device
-        return model.find({})
-    }
-}
-
 module.exports = {
-    "get_collection": get_collection,
-    "get_devices": get_devices
+    "READ": READ,
+    "WRITE": WRITE
 }

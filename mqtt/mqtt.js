@@ -1,9 +1,9 @@
 const mqtt = require('mqtt')
-const Devices = require('../../devices/tasmota')
+const Devices = require('../devices/tasmota')
 
 const topics = ['hello', '/tele/toggle_light/STATE', '/stat/toggle_light/RESULT', '/stat/toggle_light/POWER', '/cmnd/toggle_light/POWER']
 
-module.exports = () => {
+function init() {
 
     const client = mqtt.connect('mqtt://10.0.0.228:1883')
 
@@ -30,5 +30,8 @@ module.exports = () => {
         console.log(obj)
     })
 
+}
+module.exports =  {
+    "init": init
 }
 

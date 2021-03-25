@@ -4,11 +4,11 @@ const sockets = require('socket.io')
 const body_parser = require('body-parser')
 const cors = require('cors')
 const app = express()
-const url = require('url')
-const path = require('path')
+const url = require('url') // ? Needed ?
+const path = require('path') // ? Needed ?
 const e = require('cors')
-const DB = require('./public/scripts/DB')
-const mqtt = require('./public/scripts/mqtt')()
+const DB = require('./database/DB')
+const mqtt = require('./mqtt/mqtt')
 const port = 3001
 
 class SocketService {
@@ -37,12 +37,15 @@ app.use(body_parser.json())
 app.use(body_parser.urlencoded({extended: true}))
 app.use(cors())
 
-require('./public/routes')(app)
 require('./endpoints/devices')(app)
 
 app.get('/', (req, res) => {
-    res.render('index')
+    res.json({
+        "message": "Connected to HomeHubAPI"
+    })
 })
+
+mqtt.init()
 
 const server = app.listen(port, () => {
     console.log(`API Listening at http://localhost:${port}`)
