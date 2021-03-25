@@ -1,52 +1,50 @@
 const DB = require("../public/scripts/DB")
+const Models = require("../Database/models")
 
 module.exports = function(app) {
 
+    // Returns a list of supported device types
     app.get('/devices/supported', (req, res) => {
-        let promise = DB.get_table('Supported_Devices')
-        promise.then((ret) => {
+        DB.get_collection("SUPPORTED_DEVICES").then((ret) => {
             res.json(ret)
         }).catch((err) => {
             console.log(err)
         })
     })
     
+    // Returns entire list of devices of a certain type
+    // TODO: Should handle no device type by returning all devices in DB
     app.get('/devices/', (req, res) => {
         if (req.query.type) {
-            let promise = DB.get_table(req.query.type)
-            promise.then((ret) => {
+            DB.get_devices(req.query.type).then((ret) => {
+                res.json(ret)
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else {
+            DB.get_devices().then((ret) => {
                 res.json(ret)
             }).catch((err) => {
                 console.log(err)
             })
         }
     })
-    
-    // Do I accept a type param and use that to determine which DB function to call?
-    // Or do I change this route to /devices/dht_11 and create separate routes for each type of device?
-    // Or is there a better way to generalize this?
-    app.post('/devices', (req, res) => {
-        if (!req.query.type) {
-            res.json({
-                'error': 'no device type specified'
-            })
-        } else if (!req.body.id) {
-            res.json({
-                'error': 'no device identifier specified'
-            })
-        } else {
-            let promise = DB.update_dht11(req.body.id, req.body.temp, req.body.humid)
-            promise.then((ret) => {
-                app.get("socketService").emiter('update', req.body)
+
+    app.post('/add_device', (req, res) => {
+        let model = Models.Collections[req.body.type]
+        let device = new model(req.body)
+        console.log("Attempting to save")
+        device.save((err) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log('success')
                 res.json({
                     'result': 'success',
                     'status': res.statusCode,
-                    'affectd rows': ret.affectedRows
                 })
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
+            }
+        })
     })
 
 }

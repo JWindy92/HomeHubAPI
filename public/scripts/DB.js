@@ -1,63 +1,55 @@
-const mysql = require('mysql')
 
-const DB_CONFIG = {
-    host: 'localhost',
-    port: 3307,
-    user: 'john',
-    password: 'admin',
-    database: 'SmartHomeDB'
+const MongoClient = require('mongodb').MongoClient
+const mongoose = require('mongoose')
+const assert = require('assert')
+const f = require('util').format
+
+const Models = require('../../Database/models')
+
+const DB_NAME = 'SmartHomeDB'
+const USER = 'root'
+const PASSW = 'admin'
+const AUTHMECHANISM = 'DEFAULT'
+const CONN_URL = `mongodb://localhost:27018/SmartHomeDB`
+
+mongoose.connect(CONN_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+  }).then(() => {
+      console.log("Successful Connection")
+  }).catch(err => {
+      console.log(err.message)
+  }
+)
+
+const db = mongoose.connection
+
+db.on("error", () => {
+    console.log("Error from the database")
+})
+
+db.once("open", () => {
+    console.log("Connected to SmartHomeDB")
+})
+
+function get_collection(collection_name) {
+    let model = Models.Collections[collection_name]
+    return model.find({})
 }
 
-const pool = mysql.createPool(DB_CONFIG)
-
-function get_table(table_name) {
-    let query = `SELECT * FROM ${table_name}`
-    return new Promise((resolve, reject) => {
-        pool.getConnection((err,conn) => {
-            if (err) {
-                reject(err)
-            } else {
-                conn.query(query, (err, result, fields) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(result)
-                    }
-                })
-            }
-            conn.release()
-        })
-    })
-}
-
-function update_dht11(id, temp, hum) {
-    let query = `UPDATE DHT_11 SET temp = ${temp}, humidity = ${hum} WHERE ID = "${id}"`
-    return new Promise((resolve, reject) => {
-        pool.getConnection((err, conn) => {
-            if (err) {
-                reject(err)
-            } else {
-                conn.query(query, (err, result) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(JSON.stringify(result))
-                        console.log("Affected Rows: " + result.affectedRows)
-                    }
-                })
-            }
-            conn.release()
-        })
-    })
-}
-
-function test_function() {
-    console.log("Hello from the DB module!")
+function get_devices(type="") {
+    if (type) {
+        let model = Models.Device
+        return model.find({type: type})
+    } else {
+        let model = Models.Device
+        return model.find({})
+    }
 }
 
 module.exports = {
-    DB_CONFIG: DB_CONFIG,
-    get_table: get_table,
-    update_dht11: update_dht11,
-    test_function: test_function
+    "get_collection": get_collection,
+    "get_devices": get_devices
 }
