@@ -1,6 +1,5 @@
 const DB = require("../public/scripts/DB")
 const Models = require("../Database/models")
-// const mysql_DB = require("../public/scripts/mysql_DB")
 
 module.exports = function(app) {
 
