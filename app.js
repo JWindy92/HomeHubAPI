@@ -1,6 +1,5 @@
 'use strict'
 const express = require('express')
-const mysql = require('mysql')
 const sockets = require('socket.io')
 const body_parser = require('body-parser')
 const cors = require('cors')
@@ -8,7 +7,6 @@ const app = express()
 const url = require('url')
 const path = require('path')
 const e = require('cors')
-// const mysql_DB = require("./public/scripts/mysql_DB.js")
 const DB = require('./public/scripts/DB')
 const mqtt = require('./public/scripts/mqtt')()
 const port = 3001
