@@ -1,4 +1,5 @@
 const DB = require("../public/scripts/DB")
+const Models = require("../Database/models")
 // const mysql_DB = require("../public/scripts/mysql_DB")
 
 module.exports = function(app) {
@@ -31,36 +32,20 @@ module.exports = function(app) {
     })
 
     app.post('/add_device', (req, res) => {
-        console.log(req.body)
-        res.json({"status": res.statusCode})
-        
-    })
-    
-    // Do I accept a type param and use that to determine which DB function to call?
-    // Or do I change this route to /devices/dht_11 and create separate routes for each type of device?
-    // Or is there a better way to generalize this?
-    app.post('/devices', (req, res) => {
-        if (!req.query.type) {
-            res.json({
-                'error': 'no device type specified'
-            })
-        } else if (!req.body.id) {
-            res.json({
-                'error': 'no device identifier specified'
-            })
-        } else {
-            let promise = mysql_DB.update_dht11(req.body.id, req.body.temp, req.body.humid)
-            promise.then((ret) => {
-                app.get("socketService").emiter('update', req.body)
+        let model = Models.Collections[req.body.type]
+        let device = new model(req.body)
+        console.log("Attempting to save")
+        device.save((err) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log('success')
                 res.json({
                     'result': 'success',
                     'status': res.statusCode,
-                    'affectd rows': ret.affectedRows
                 })
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
+            }
+        })
     })
 
 }

@@ -16,13 +16,23 @@ const DeviceSchema = new Schema({
 
 const DeviceModel = mongoose.model("Device", DeviceSchema, "DEVICES")
 
+const Sonoff_Basic_Schema = new Schema({
+    type: String,
+    name: String,
+    topic: String
+})
+
+const Sonoff_Basic_Model = mongoose.model("Sonoff Basic", Sonoff_Basic_Schema, "DEVICES")
+
 const collection_dict = {
     'SUPPORTED_DEVICES': SupportedDeviceModel,
-    'DEVICES': DeviceModel
+    'DEVICES': DeviceModel,
+    'Sonoff Basic': Sonoff_Basic_Model,
 }
 
 module.exports = {
     "Collections" : collection_dict,
     "SupportedDevice" : SupportedDeviceModel,
+    "Sonoff_Basic": Sonoff_Basic_Model,
     "Device" : DeviceModel
 }
