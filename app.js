@@ -8,8 +8,8 @@ const url = require('url') // ? Needed ?
 const path = require('path') // ? Needed ?
 const e = require('cors')
 const DB = require('./database/DB')
-const mqtt = require('./mqtt/mqtt')
 const { MqttService } = require('./mqtt/mqtt')
+const { SonoffService } = require('./services/sonoff')
 const port = 3001
 
 class SocketService {
@@ -47,11 +47,13 @@ app.get('/', (req, res) => {
     })
 })
 
-mqtt.init()
-
 const server = app.listen(port, () => {
     console.log(`API Listening at http://localhost:${port}`)
 })
 
 app.set("socketService", new SocketService(server))
 app.set("MqttService", new MqttService)
+app.set("SonoffService", new SonoffService(app))
+
+app.get("SonoffService").subscribe_to_device("toggle_light")
+app.get("SonoffService").subscribe_to_device("lights/table-lamp")

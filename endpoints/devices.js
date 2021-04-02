@@ -31,7 +31,8 @@ module.exports = (app) => {
 
     app.post("/devices/", (req, res) => {
         if (req.query.id) {
-            app.get("MqttService").publish(`/cmnd/${req.body.topic}/POWER`, req.body.state)
+            // app.get("MqttService").publish(`/cmnd/${req.body.topic}/POWER`, req.body.state)
+            app.get("SonoffService").set_power(req.body.topic, req.body.state)
             DB.WRITE.update_device(req.body).then((ret) => {
                 res.json(ret)
                 app.get("socketService").emiter("update", ret)

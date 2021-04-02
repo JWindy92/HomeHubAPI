@@ -1,3 +1,4 @@
+// ! this module is dead
 class Tasmota_Sonoff_Basic {
 
     constructor(topic, mqtt_client) {

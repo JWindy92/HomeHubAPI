@@ -15,6 +15,7 @@ function create_device(device_obj) {
     )})
 }
 
+// TODO: Move this function to read_functions and finish
 function get_device(model, id) {
     return new Promise((resolve, reject) => {
         model.findOne({_id: id}).then((ret) => {
@@ -28,6 +29,7 @@ function get_device(model, id) {
 function update_device(device_data) {
     return new Promise((resolve, reject) => {
         let model = Models.Lookup[device_data.type]
+        console.log(device_data)
         model.findOne({_id: device_data._id}).then((doc) => {
             doc.state = device_data.state
             doc.save().then((ret) => {
