@@ -9,6 +9,7 @@ const path = require('path') // ? Needed ?
 const e = require('cors')
 const DB = require('./database/DB')
 const mqtt = require('./mqtt/mqtt')
+const { MqttService } = require('./mqtt/mqtt')
 const port = 3001
 
 class SocketService {
@@ -31,6 +32,7 @@ class SocketService {
     }
 }
 
+
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(body_parser.json())
@@ -52,3 +54,4 @@ const server = app.listen(port, () => {
 })
 
 app.set("socketService", new SocketService(server))
+app.set("MqttService", new MqttService)

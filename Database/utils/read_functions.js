@@ -15,6 +15,8 @@ function get_devices(type="") {
     }
 }
 
+
+
 module.exports = {
     "get_collection": get_collection,
     "get_devices": get_devices

@@ -19,7 +19,8 @@ const DeviceModel = mongoose.model("Device", DeviceSchema, "DEVICES")
 const Sonoff_Basic_Schema = new Schema({
     type: String,
     name: String,
-    topic: String
+    topic: String,
+    state: Boolean
 })
 
 const Sonoff_Basic_Model = mongoose.model("Sonoff Basic", Sonoff_Basic_Schema, "DEVICES")

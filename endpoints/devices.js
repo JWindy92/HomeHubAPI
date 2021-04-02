@@ -29,6 +29,20 @@ module.exports = (app) => {
         }
     })
 
+    app.post("/devices/", (req, res) => {
+        if (req.query.id) {
+            app.get("MqttService").publish(`/cmnd/${req.body.topic}/POWER`, req.body.state)
+            DB.WRITE.update_device(req.body).then((ret) => {
+                res.json(ret)
+                app.get("socketService").emiter("update", ret)
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else {
+            res.json({error: "No id specified"})
+        }
+    })
+
     app.post('/add_device', (req, res) => {
         DB.WRITE.create_device(req.body)
         .then((ret) => {
