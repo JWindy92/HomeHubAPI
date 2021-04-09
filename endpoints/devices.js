@@ -29,9 +29,8 @@ module.exports = (app) => {
         }
     })
 
-    app.post("/devices/", (req, res) => {
+    app.post("/devices/sonoff", (req, res) => {
         if (req.query.id) {
-            // app.get("MqttService").publish(`/cmnd/${req.body.topic}/POWER`, req.body.state)
             app.get("SonoffService").set_power(req.body.topic, req.body.state)
             DB.WRITE.update_device(req.body).then((ret) => {
                 res.json(ret)
@@ -44,6 +43,23 @@ module.exports = (app) => {
         }
     })
 
+    app.post("/devices/yeelight", (req, res) => {
+        console.log(req.body)
+        if (req.query.id) {
+            app.get("YeelightService").set_state(req.body)
+            DB.WRITE.update_device(req.body.data).then((ret) => {
+                res.json(ret)
+                console.log(ret)
+                app.get("socketService").emiter("update", ret)
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else {
+            res.json({error: "No id specified"})
+        }
+    })
+
+    //* Writes new device to database
     app.post('/add_device', (req, res) => {
         DB.WRITE.create_device(req.body)
         .then((ret) => {

@@ -1,4 +1,3 @@
-
 class SonoffService {
 
     constructor(app) {
@@ -22,3 +21,4 @@ module.exports =  {
     // "init": init,
     "SonoffService" : SonoffService
 }
+

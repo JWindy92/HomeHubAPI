@@ -1,3 +1,4 @@
+const { json } = require('body-parser')
 const mqtt = require('mqtt')
 const Devices = require('../devices/tasmota')
 class MqttService {
@@ -15,6 +16,8 @@ class MqttService {
     }
 
     publish(topic, msg) {
+        console.log("here")
+        msg = JSON.stringify(msg)
         this.client.publish(topic, msg)
     }
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { MqttService } = require('../mqtt/mqtt')
 const Schema = mongoose.Schema
 
 const SupportedDeviceSchema = new Schema({
@@ -26,15 +27,29 @@ const Sonoff_Basic_Schema = new Schema({
 
 const Sonoff_Basic_Model = mongoose.model("Sonoff Basic", Sonoff_Basic_Schema, "DEVICES")
 
+const Yeelight_Schema = new Schema({
+    type: String,
+    name: String,
+    addr: String,
+    state: {
+        power: Boolean,
+    },
+    protocol: String
+})
+
+const Yeelight_Model = mongoose.model("Yeelight", Yeelight_Schema, "DEVICES")
+
 const lookup_dict = {
     'SUPPORTED_DEVICES': SupportedDeviceModel,
     'DEVICES': DeviceModel,
     'Sonoff Basic': Sonoff_Basic_Model,
+    'Yeelight': Yeelight_Model,
 }
 
 module.exports = {
     "Lookup" : lookup_dict,
     "SupportedDevice" : SupportedDeviceModel,
     "Sonoff_Basic": Sonoff_Basic_Model,
-    "Device" : DeviceModel
+    "Device" : DeviceModel,
+    "Yeelight": Yeelight_Model
 }

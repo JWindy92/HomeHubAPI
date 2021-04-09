@@ -10,6 +10,7 @@ const e = require('cors')
 const DB = require('./database/DB')
 const { MqttService } = require('./mqtt/mqtt')
 const { SonoffService } = require('./services/sonoff')
+const { YeelightService } = require('./services/yeelight')
 const port = 3001
 
 class SocketService {
@@ -54,6 +55,7 @@ const server = app.listen(port, () => {
 app.set("socketService", new SocketService(server))
 app.set("MqttService", new MqttService)
 app.set("SonoffService", new SonoffService(app))
+app.set("YeelightService", new YeelightService(app))
 
 app.get("SonoffService").subscribe_to_device("toggle_light")
 app.get("SonoffService").subscribe_to_device("lights/table-lamp")
