@@ -5,7 +5,7 @@ class SonoffService {
     }
 
     set_power(topic, state) {
-        console.log("Setting power for " + topic)
+        state = Boolean((state == 'true'))
         this.mqtt.publish(`/cmnd/${topic}/POWER`, state)
     }
 
