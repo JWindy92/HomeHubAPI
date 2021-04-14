@@ -12,7 +12,8 @@ module.exports = (app) => {
         })
     })
     
-    // Returns entire list of devices of a certain type
+    // Returns entire list of devices
+    // If "type" url query provided, will only return devices of that type
     app.get('/devices/', (req, res) => {
         if (req.query.type) {
             DB.READ.get_devices(req.query.type).then((ret) => {
@@ -44,7 +45,6 @@ module.exports = (app) => {
     })
 
     app.post("/devices/yeelight", (req, res) => {
-        console.log(req.body)
         if (req.query.id) {
             app.get("YeelightService").set_state(req.body)
             DB.WRITE.update_device(req.body.data).then((ret) => {

@@ -7,7 +7,6 @@ class YeelightService {
     }
 
     set_state(data) {
-        console.log("here")
         this.mqtt.publish(this.topic, data)
     }
 

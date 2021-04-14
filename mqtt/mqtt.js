@@ -11,12 +11,10 @@ class MqttService {
             'topic': topic,
             'message': message.toString()
             }
-        console.log(obj)
         })
     }
 
     publish(topic, msg) {
-        console.log("here")
         msg = JSON.stringify(msg)
         this.client.publish(topic, msg)
     }

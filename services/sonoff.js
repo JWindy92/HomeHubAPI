@@ -18,7 +18,6 @@ class SonoffService {
 }
 
 module.exports =  {
-    // "init": init,
     "SonoffService" : SonoffService
 }
 
