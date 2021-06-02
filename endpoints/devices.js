@@ -1,10 +1,21 @@
 const DB = require("../database/DB")
 const Models = require("../database/models")
+const { LoadService } = require("../services/utils")
+
+function validate_command(data) {
+    let promise = new Promise((resolve, reject) => {
+        if (!data.device_type) {
+            reject("No device type provided")
+        }
+        resolve(data)
+    })
+    return promise
+}
 
 module.exports = (app) => {
 
     // Returns a list of supported device types
-    app.get('/devices/supported', (req, res) => {
+    app.get('/supported', (req, res) => {
         DB.READ.get_collection("SUPPORTED_DEVICES").then((ret) => {
             res.json(ret)
         }).catch((err) => {
@@ -30,46 +41,31 @@ module.exports = (app) => {
         }
     })
 
-    app.post("/devices/sonoff", (req, res) => {
-        if (req.query.id) {
-            app.get("SonoffService").set_power(req.body.topic, req.body.state)
-            DB.WRITE.update_device(req.body).then((ret) => {
-                res.json(ret)
-                app.get("socketService").emiter("update", ret)
-            }).catch((err) => {
-                console.log(err)
-            })
-        } else {
-            res.json({error: "No id specified"})
-        }
-    })
 
-    app.post("/devices/yeelight", (req, res) => {
-        if (req.query.id) {
-            app.get("YeelightService").set_state(req.body)
-            DB.WRITE.update_device(req.body.data).then((ret) => {
-                res.json(ret)
-                console.log(ret)
-                app.get("socketService").emiter("update", ret)
+    app.post("/devices/command", (req, res) => {
+        validate_command(req.body).then((data) => {
+            let service = LoadService(app, data.device_type)
+            if (!service) { res.json({"error": "Invalid device type"})}
+            service.handle_command(data).then((response) => {
+                res.json({
+                    "status": "success",
+                    "response": response
+                })
             }).catch((err) => {
-                console.log(err)
+                res.json({"error": err})
             })
-        } else {
-            res.json({error: "No id specified"})
-        }
+        }).catch((err) => {
+            res.json({"error": err})
+        })
+        
+        
     })
 
     //* Writes new device to database
     app.post('/add_device', (req, res) => {
-        DB.WRITE.create_device(req.body)
-        .then((ret) => {
-            res.json({
-                'result': ret,
-                'status': res.statusCode,
-            })
-        }).catch((err) => {
-            console.log(err)
+        let service = LoadService(app, req.body.type)
+        service.save_new_device(req.body).then((data) => {
+            res.status(201).send(data)
         })
-
     })
 }

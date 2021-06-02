@@ -1,11 +1,43 @@
+const { Model } = require('mongoose')
+const DB = require("../database/DB")
+const Models = require('../database/models')
 class SonoffService {
 
     constructor(app) {
         this.mqtt = app.get("MqttService")
     }
 
+    save_new_device(data) {
+        return new Promise ((resolve, reject) => {
+            DB.WRITE.create_device(data)
+            .then((ret) => {
+                resolve(data)
+            }).catch((err) => {
+                reject(err)
+            })
+        })
+    }
+
+    handle_command(data) {
+        return new Promise ((resolve, reject) => {
+            if (!data.topic) {
+                reject("No topic provided")
+            } else if (!data.state.hasOwnProperty("power")) {
+                reject("No power value provided")
+            } else {
+                try {
+                    this.set_power(data.topic, data.state.power)
+                    resolve(data)
+                }
+                catch {
+                    reject("Something went wrong")
+                }
+            }
+        })
+    }
+
     set_power(topic, state) {
-        state = Boolean((state == 'true'))
+        // state = Boolean((state == 'true'))  //* Removed because state now comes in as boolean
         this.mqtt.publish(`/cmnd/${topic}/POWER`, state)
     }
 

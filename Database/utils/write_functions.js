@@ -1,8 +1,16 @@
 const { Mongoose } = require('mongoose')
 const Models = require('../models')
+const { LoadService } = require("../../services/utils")
 
 // * Writes new device to the database
 function create_device(device_obj) {
+    // TODO: Everything should be running from the service
+    // let service = LoadService(device_obj.type)
+    // service.save_new_device(device_obj).then((ret) => {
+    //     resolve(ret)
+    // }).catch((err) => {
+    //     reject(err)
+    // })
     let model = Models.Lookup[device_obj.type]
     let device = new model(device_obj)
     return new Promise((resolve, reject) => {

@@ -21,7 +21,9 @@ const Sonoff_Basic_Schema = new Schema({
     type: String,
     name: String,
     topic: String,
-    state: Boolean,
+    state: {
+        power: Boolean,
+    },
     protocol: String
 })
 
