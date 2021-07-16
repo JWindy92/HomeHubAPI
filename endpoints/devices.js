@@ -62,7 +62,8 @@ module.exports = (app) => {
     })
 
     //* Writes new device to database
-    app.post('/add_device', (req, res) => {
+    app.post('/devices/new', (req, res) => {
+        console.log(req.body)
         let service = LoadService(app, req.body.type)
         service.save_new_device(req.body).then((data) => {
             res.status(201).send(data)

@@ -15,7 +15,16 @@ function get_devices(type="") {
     }
 }
 
-
+// TODO: Finish
+function get_device(model, id) {
+    return new Promise((resolve, reject) => {
+        model.findOne({_id: id}).then((ret) => {
+            resolve(ret)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
 
 module.exports = {
     "get_collection": get_collection,

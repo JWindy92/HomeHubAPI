@@ -1,4 +1,5 @@
 const DB = require("../database/DB")
+const { Yeelight } = require("../database/models")
 class YeelightService {
 
     constructor(app) {
@@ -8,7 +9,19 @@ class YeelightService {
 
     save_new_device(data) {
         return new Promise ((resolve, reject) => {
-            DB.WRITE.create_device(data)
+
+            data = {
+                type: data.type,
+                name: data.Name,
+                addr: data['IP Address'],
+                state: {
+                    power: false
+                },
+                protocol: 'mqtt'
+            }
+
+            let device = new Yeelight(data)
+            DB.WRITE.create_device(device)
             .then((ret) => {
                 resolve(data)
             }).catch((err) => {

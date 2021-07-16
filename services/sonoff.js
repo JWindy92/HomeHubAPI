@@ -1,6 +1,6 @@
 const { Model } = require('mongoose')
 const DB = require("../database/DB")
-const Models = require('../database/models')
+const { Sonoff_Basic } = require('../database/models')
 class SonoffService {
 
     constructor(app) {
@@ -8,8 +8,20 @@ class SonoffService {
     }
 
     save_new_device(data) {
+
+        data = {
+            type: data.type,
+            name: data.Name,
+            topic: data['MQTT Topic'],
+            state: {
+                power: false
+            },
+            protocol: 'mqtt'
+        }
+        console.log(data)
+        let device = new Sonoff_Basic(data)
         return new Promise ((resolve, reject) => {
-            DB.WRITE.create_device(data)
+            DB.WRITE.create_device(device)
             .then((ret) => {
                 resolve(data)
             }).catch((err) => {
