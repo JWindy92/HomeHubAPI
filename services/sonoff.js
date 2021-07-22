@@ -1,14 +1,17 @@
 const { Model } = require('mongoose')
 const DB = require("../database/DB")
 const { Sonoff_Basic } = require('../database/models')
-class SonoffService {
+const { BaseDeviceService } = require('./base_device')
+
+class SonoffService extends BaseDeviceService {
 
     constructor(app) {
+        super()
         this.mqtt = app.get("MqttService")
+        this.model = Sonoff_Basic
     }
 
-    save_new_device(data) {
-
+    format_data(data) {
         data = {
             type: data.type,
             name: data.Name,
@@ -18,17 +21,31 @@ class SonoffService {
             },
             protocol: 'mqtt'
         }
-        console.log(data)
-        let device = new Sonoff_Basic(data)
-        return new Promise ((resolve, reject) => {
-            DB.WRITE.create_device(device)
-            .then((ret) => {
-                resolve(data)
-            }).catch((err) => {
-                reject(err)
-            })
-        })
+
+        return data
     }
+
+    // save_new_device(data) {
+    //     data = {
+    //         type: data.type,
+    //         name: data.Name,
+    //         topic: data['MQTT Topic'],
+    //         state: {
+    //             power: false
+    //         },
+    //         protocol: 'mqtt'
+    //     }
+
+    //     let device = new this.model(data)
+    //     return new Promise ((resolve, reject) => {
+    //         DB.WRITE.create_device(device)
+    //         .then((ret) => {
+    //             resolve(data)
+    //         }).catch((err) => {
+    //             reject(err)
+    //         })
+    //     })
+    // }
 
     handle_command(data) {
         return new Promise ((resolve, reject) => {

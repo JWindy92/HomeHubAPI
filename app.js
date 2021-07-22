@@ -59,3 +59,7 @@ app.set("YeelightService", new YeelightService(app))
 
 app.get("SonoffService").subscribe_to_device("toggle_light")
 app.get("SonoffService").subscribe_to_device("lights/table-lamp")
+
+module.exports =  {
+    "app" : app
+}

@@ -32,6 +32,12 @@ module.exports = (app) => {
             }).catch((err) => {
                 console.log(err)
             })
+        } else if (req.query.id) {
+            DB.READ.get_device_by_id(req.query.id).then((ret) => {
+                res.json(ret)
+            }).catch((err) => {
+                console.log(err)
+            })
         } else {
             DB.READ.get_devices().then((ret) => {
                 res.json(ret)
@@ -57,13 +63,10 @@ module.exports = (app) => {
         }).catch((err) => {
             res.json({"error": err})
         })
-        
-        
     })
 
     //* Writes new device to database
     app.post('/devices/new', (req, res) => {
-        console.log(req.body)
         let service = LoadService(app, req.body.type)
         service.save_new_device(req.body).then((data) => {
             res.status(201).send(data)
